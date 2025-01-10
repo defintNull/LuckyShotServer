@@ -31,6 +31,7 @@ dependencies {
     implementation("org.apache.logging.log4j:log4j-slf4j2-impl:2.24.2")
     implementation("org.springframework.security:spring-security-crypto:5.8.0")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.18.2")
+    implementation("org.java-websocket:Java-WebSocket:1.6.0")
 }
 
 tasks.test {
