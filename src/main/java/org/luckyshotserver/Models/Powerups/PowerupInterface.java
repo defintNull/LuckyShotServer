@@ -2,6 +2,7 @@ package org.luckyshotserver.Models.Powerups;
 import org.luckyshotserver.Views.View;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public interface PowerupInterface {
     static ArrayList<String> getPowerupStringList() {

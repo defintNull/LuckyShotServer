@@ -3,6 +3,7 @@ package org.luckyshotserver.Facades.Services;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
+import org.luckyshotserver.Facades.LoginFacade;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,7 +27,7 @@ public class Server extends WebSocketServer {
     @Override
     public void onOpen(WebSocket webSocket, ClientHandshake clientHandshake) {
         //Show Login Menu
-        webSocket.send("Ciao");
+        System.out.println("Client connected");
     }
 
     @Override
@@ -39,7 +40,21 @@ public class Server extends WebSocketServer {
         String command = s.split(":")[0];
         switch (command) {
             case "LOGIN":
-
+                String credentials = s.split(":")[1];
+                String username = credentials.split("&")[0];
+                String password = credentials.split("&")[1];
+                LoginFacade loginFacade = new LoginFacade();
+                if(loginFacade.login(webSocket, username, password)) {
+                    loggedUser.put(webSocket, username);
+                }
+                break;
+            case "REGISTER":
+                credentials = s.split(":")[1];
+                username = credentials.split("&")[0];
+                password = credentials.split("&")[1];
+                loginFacade = new LoginFacade();
+                loginFacade.register(webSocket, username, password);
+                break;
         }
     }
 
@@ -51,5 +66,19 @@ public class Server extends WebSocketServer {
     @Override
     public void onStart() {
         System.out.println("Connection Start");
+    }
+
+    public void sendError(WebSocket webSocket, String message) {
+        sendMessage(webSocket, "ERROR: " + message);
+    }
+
+    public void sendOk(WebSocket webSocket, String message) {
+        sendMessage(webSocket, "OK: " + message);
+    }
+
+    public void sendMessage(WebSocket webSocket, String message) {
+        webSocket.send("START");
+        webSocket.send(message);
+        webSocket.send("STOP");
     }
 }

@@ -1,7 +1,6 @@
 package org.luckyshotserver.Models.StateEffects;
 
 import org.luckyshotserver.Models.Powerups.Powerup;
-import org.luckyshotserver.Views.SinglePlayerGameView;
 import org.luckyshotserver.Views.View;
 
 import java.lang.reflect.Method;

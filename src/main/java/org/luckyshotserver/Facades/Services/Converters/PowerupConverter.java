@@ -22,7 +22,7 @@ public class PowerupConverter implements AttributeConverter<HashMap<Powerup, Int
         for(Map.Entry<Powerup, Integer> entry : powerupIntegerHashMap.entrySet()) {
             ArrayList<String> row = new ArrayList<>();
             // Name
-            row.add(entry.getKey().getClass().getName());
+            row.add(entry.getKey().getClass().getSimpleName());
             // Occurrences
             row.add(Integer.toString(entry.getValue()));
             matrix.add(row);
@@ -52,8 +52,11 @@ public class PowerupConverter implements AttributeConverter<HashMap<Powerup, Int
             );
 
             for(ArrayList<String> convert : convertList) {
+                String[] path = Powerup.class.getName().split("\\.");
+                path[path.length - 1] = convert.get(0);
+                String path2 = String.join(".", path);
                 try {
-                    Method method = Class.forName(convert.get(0)).getMethod("getInstance");
+                    Method method = Class.forName(path2).getMethod("getInstance");
                     Object obj = method.invoke(null);
                     hashMap.put((Powerup) obj, Integer.valueOf(convert.get(1)));
                 } catch (Exception e) {

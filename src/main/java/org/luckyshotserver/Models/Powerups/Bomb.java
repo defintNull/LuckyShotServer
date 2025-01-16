@@ -2,7 +2,9 @@ package org.luckyshotserver.Models.Powerups;
 
 import org.luckyshotserver.Models.SinglePlayerGame;
 
-public class Bomb extends Powerup{
+import java.io.Serializable;
+
+public class Bomb extends Powerup {
     private static Bomb instance;
     private static final int COST = 20;
 
