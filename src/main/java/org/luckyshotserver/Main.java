@@ -1,6 +1,5 @@
 package org.luckyshotserver;
 
-import org.luckyshotserver.Facades.Services.Connection;
 import org.luckyshotserver.Facades.Services.Server;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or

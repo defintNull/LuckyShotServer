@@ -24,6 +24,6 @@
         <!--        <property name="hibernate.format_sql">true</property>-->
         <!--        <property name="hibernate.highlight_sql">true</property>-->
 
-        <mapping class="org.luckyshot.Models.User"/>
+        <mapping class="org.luckyshotserver.Models.User"/>
     </session-factory>
 </hibernate-configuration>

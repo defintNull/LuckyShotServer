@@ -36,7 +36,11 @@ public class Server extends WebSocketServer {
 
     @Override
     public void onMessage(WebSocket webSocket, String s) {
+        String command = s.split(":")[0];
+        switch (command) {
+            case "LOGIN":
 
+        }
     }
 
     @Override
