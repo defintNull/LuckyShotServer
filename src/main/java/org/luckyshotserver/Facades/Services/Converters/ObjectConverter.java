@@ -54,7 +54,6 @@ public class ObjectConverter {
 
         Map<String, String> powerupMap = null;
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
             powerupMap = (HashMap)map.get("powerups");
         } catch (Exception e) {
             e.printStackTrace();
