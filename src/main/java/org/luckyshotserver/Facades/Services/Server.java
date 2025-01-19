@@ -4,14 +4,19 @@ import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 import org.luckyshotserver.Facades.LoginFacade;
+import org.luckyshotserver.Facades.Services.Converters.ObjectConverter;
+import org.luckyshotserver.Facades.UserFacade;
+import org.luckyshotserver.Models.User;
 
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Server extends WebSocketServer {
     private final static int port = 8456;
     private static Server instance = null;
-    private ConcurrentHashMap<WebSocket, String> loggedUser = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<WebSocket, User> loggedUser = new ConcurrentHashMap<>();
 
     private Server() {
         super(new InetSocketAddress(port));
@@ -32,29 +37,48 @@ public class Server extends WebSocketServer {
 
     @Override
     public void onClose(WebSocket webSocket, int i, String s, boolean b) {
-        webSocket.send("addio");
+        loggedUser.remove(webSocket);
+        System.out.println("Client disconnected");
     }
 
     @Override
     public void onMessage(WebSocket webSocket, String s) {
-        String command = s.split(":")[0];
-        switch (command) {
-            case "LOGIN":
-                String credentials = s.split(":")[1];
-                String username = credentials.split("&")[0];
-                String password = credentials.split("&")[1];
-                LoginFacade loginFacade = new LoginFacade();
-                if(loginFacade.login(webSocket, username, password)) {
-                    loggedUser.put(webSocket, username);
-                }
-                break;
-            case "REGISTER":
-                credentials = s.split(":")[1];
-                username = credentials.split("&")[0];
-                password = credentials.split("&")[1];
-                loginFacade = new LoginFacade();
-                loginFacade.register(webSocket, username, password);
-                break;
+        ArrayList<String> message = new ArrayList<>(Arrays.asList(s.split(":")));
+        String command = message.removeFirst();
+        String params = String.join(":", message);
+        if(command.equals("LOGIN")) {
+            String username = params.split("&")[0];
+            String password = params.split("&")[1];
+            LoginFacade loginFacade = new LoginFacade();
+            User user = loginFacade.login(webSocket, username, password);
+            if(user == null) {
+                sendError(webSocket, "NOT_FOUND");
+                return;
+            }
+            if(loggedUser.containsValue(user)) {
+                sendError(webSocket, "ALREADY_LOGGED");
+                return;
+            }
+            ObjectConverter converter = new ObjectConverter();
+            String userJSON = converter.userToJson(user);
+            sendOk(webSocket, userJSON);
+            loggedUser.put(webSocket, user);
+        }
+        else if (command.equals("REGISTER")) {
+            String username = params.split("&")[0];
+            String password = params.split("&")[1];
+            LoginFacade loginFacade = new LoginFacade();
+            loginFacade.register(webSocket, username, password);
+        }
+        else if (command.equals("UPDATE_USER")) {
+            UserFacade userFacade = new UserFacade();
+            User user = loggedUser.get(webSocket);
+
+            if (!userFacade.updateUser(user, params)) {
+                sendError(webSocket, "FATAL");
+            } else {
+                sendOk(webSocket, "OK");
+            }
         }
     }
 
@@ -69,11 +93,11 @@ public class Server extends WebSocketServer {
     }
 
     public void sendError(WebSocket webSocket, String message) {
-        sendMessage(webSocket, "ERROR: " + message);
+        sendMessage(webSocket, "ERROR:" + message);
     }
 
     public void sendOk(WebSocket webSocket, String message) {
-        sendMessage(webSocket, "OK: " + message);
+        sendMessage(webSocket, "OK:" + message);
     }
 
     public void sendMessage(WebSocket webSocket, String message) {

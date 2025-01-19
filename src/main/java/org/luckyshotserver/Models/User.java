@@ -34,7 +34,7 @@ public class User {
     private int level;
 
     @Column(name = "xp", nullable = false)
-    private  int xp;
+    private int xp;
 
     @Column(name = "total_score", nullable = false)
     private long totalScore;
@@ -78,6 +78,10 @@ public class User {
 
     public User(String username, String password) {
         this(username, password, 0, 1, 0, 0);
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public Long getId() {

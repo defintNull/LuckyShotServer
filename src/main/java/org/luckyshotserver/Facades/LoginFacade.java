@@ -11,15 +11,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class LoginFacade {
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-    private HibernateService hibernateService;
     
     public LoginFacade() {
 
     }
 
-    public boolean login(WebSocket webSocket, String username, String password) {
-        hibernateService = HibernateService.getInstance();
-        Session session = hibernateService.getSessionFactory().openSession();
+    public User login(WebSocket webSocket, String username, String password) {
+        Session session = HibernateService.getInstance().getCurrentSession();
         User user = null;
         Server server = Server.getInstance();
 
@@ -29,30 +27,19 @@ public class LoginFacade {
                     .getSingleResult();
         } catch (Exception e) {
             user = null;
-            server.sendError(webSocket, "NOT FOUND");
+
         }
         if(user != null) {
-            if(!encoder.matches(password, user.getPassword())) {
+            if (!encoder.matches(password, user.getPassword())) {
                 user = null;
-                server.sendError(webSocket, "NOT FOUND");
             }
         }
-        session.close();
 
-        if(user != null) {
-            ObjectConverter converter = new ObjectConverter();
-            String userJSON = converter.userToJson(user);
-            server.sendOk(webSocket, userJSON);
-        } else {
-            return false;
-        }
-
-        return true;
+        return user;
     }
 
     public boolean register(WebSocket webSocket, String username, String password) {
-        HibernateService hibernateService = HibernateService.getInstance();
-        Session session = hibernateService.getSessionFactory().openSession();
+        Session session = HibernateService.getInstance().getCurrentSession();
 
         boolean check = false;
         User user = null;
@@ -65,7 +52,7 @@ public class LoginFacade {
         }
         if(user != null) {
             Server server = Server.getInstance();
-            server.sendError(webSocket, "ALREADY EXISTS");
+            server.sendError(webSocket, "ALREADY_EXISTS");
             return false;
         } else {
             check = true;
@@ -84,7 +71,6 @@ public class LoginFacade {
             }
             e.printStackTrace();
         }
-        session.close();
 
         Server server = Server.getInstance();
         server.sendOk(webSocket, "REGISTERED");
