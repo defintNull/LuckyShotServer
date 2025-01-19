@@ -27,6 +27,7 @@ public class Server extends WebSocketServer {
             instance = new Server();
         }
         return instance;
+
     }
 
     @Override
