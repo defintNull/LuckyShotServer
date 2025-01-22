@@ -109,6 +109,7 @@ public class Server extends WebSocketServer {
             }
         }
         else if(command.equals("LEAVE_ROOM")) {
+            System.out.println(params);
             if(webSocket.equals(gameRooms.get(params).getFirst())) {
                 sendOk(gameRooms.get(params).getLast(), "ROOM_CLOSED");
                 gameRooms.remove(params);
