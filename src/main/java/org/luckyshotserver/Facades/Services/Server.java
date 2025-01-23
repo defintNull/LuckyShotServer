@@ -10,21 +10,25 @@ import org.luckyshotserver.Facades.LoginFacade;
 import org.luckyshotserver.Facades.Services.Converters.ObjectConverter;
 import org.luckyshotserver.Facades.UserFacade;
 import org.luckyshotserver.Models.Enums.MessageEnum;
+import org.luckyshotserver.Models.Room;
 import org.luckyshotserver.Models.User;
 
 import java.net.InetSocketAddress;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Server extends WebSocketServer {
     private final static int port = 8456;
     private static Server instance = null;
     private ConcurrentHashMap<WebSocket, User> loggedUser = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<String, ArrayList<WebSocket>> gameRooms = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, Room> gameRooms = new ConcurrentHashMap<>();
     private final HashSet<String> rooms = new HashSet<>();
+    private final int MAX_ROOM_PLAYERS = 2;
 
     private Server() {
         super(new InetSocketAddress(port));
+        launchEmptyRoomCollector();
     }
 
     public static Server getInstance() {
@@ -32,7 +36,6 @@ public class Server extends WebSocketServer {
             instance = new Server();
         }
         return instance;
-
     }
 
     @Override
@@ -44,6 +47,14 @@ public class Server extends WebSocketServer {
     @Override
     public void onClose(WebSocket webSocket, int i, String s, boolean b) {
         loggedUser.remove(webSocket);
+        for (Map.Entry<String, Room> entry : gameRooms.entrySet()) {
+            Room room = entry.getValue();
+            if(room.getMembers().contains(webSocket)) {
+                if(room.getOwner().equals(webSocket)) {
+                    gameRooms.remove(entry.getKey());
+                }
+            }
+        }
         System.out.println("Client disconnected");
     }
 
@@ -87,40 +98,48 @@ public class Server extends WebSocketServer {
             }
         }
         else if(command.equals("CREATE_ROOM")) {
-            ArrayList<WebSocket> players = new ArrayList<>();
-            players.add(webSocket);
             String code = generateRoomCode();
-            gameRooms.put(code, players);
+            Room room = new Room(webSocket);
+            gameRooms.put(code, room);
             sendOk(webSocket, code);
         }
         else if(command.equals("JOIN_ROOM")) {
-            if(gameRooms.containsKey(params) && gameRooms.get(params).size() < 2) {
-                gameRooms.get(params).add(webSocket);
+            if(gameRooms.containsKey(params) && gameRooms.get(params).getMembers().size() < MAX_ROOM_PLAYERS) {
+                gameRooms.get(params).addMember(webSocket);
                 ArrayList<Pair<MessageEnum, String>> messages = new ArrayList<>();
-                for (int i = 0; i < gameRooms.get(params).size(); i++) {
-                    Pair<MessageEnum, String> m = new Pair<>(MessageEnum.OK, loggedUser.get(gameRooms.get(params).get(i)).getUsername());
+                ArrayList<WebSocket> roomMembers = gameRooms.get(params).getMembers();
+                for (WebSocket member : roomMembers) {
+                    Pair<MessageEnum, String> m = new Pair<>(MessageEnum.OK, loggedUser.get(member).getUsername());
                     messages.add(m);
                 }
-                for (int i = 0; i < gameRooms.get(params).size(); i++) {
-                    sendMessage(gameRooms.get(params).get(i), messages);
+                for (WebSocket roomMember : roomMembers) {
+                    sendMessage(roomMember, messages);
                 }
             } else {
-                sendError(webSocket, "NOT_VALID_ROOM");
+                sendError(webSocket, "ROOM_NOT_VALID");
             }
         }
         else if(command.equals("LEAVE_ROOM")) {
             System.out.println(params);
-            if(webSocket.equals(gameRooms.get(params).getFirst())) {
-                sendOk(gameRooms.get(params).getLast(), "ROOM_CLOSED");
-                gameRooms.remove(params);
-            } else {
-                gameRooms.get(params).remove(webSocket);
-                ArrayList<Pair<MessageEnum, String>> messages = new ArrayList<>();
-                for (int i = 0; i < gameRooms.get(params).size(); i++) {
-                    Pair<MessageEnum, String> m = new Pair<>(MessageEnum.OK, loggedUser.get(gameRooms.get(params).get(i)).getUsername());
-                    messages.add(m);
+
+            Room currentRoom = gameRooms.get(params);
+            if(webSocket.equals(currentRoom.getOwner())) {
+                currentRoom.removeMember(webSocket);
+                if(currentRoom.getMembers().size() > 1) {
+                    for(WebSocket member : currentRoom.getMembers()) {
+                        sendOk(member, "ROOM_CLOSED");
+                    }
                 }
-                sendMessage(gameRooms.get(params).getFirst(), messages);
+                gameRooms.remove(params);
+                rooms.remove(params);
+            } else {
+                currentRoom.removeMember(webSocket);
+                ArrayList<Pair<MessageEnum, String>> messages = new ArrayList<>();
+                for (int i = 0; i < currentRoom.getMembers().size(); i++) {
+                    Pair<MessageEnum, String> m = new Pair<>(MessageEnum.OK, loggedUser.get(currentRoom.getMembers().get(i)).getUsername());
+                    messages.add(m);
+                    sendMessage(currentRoom.getMembers().get(i), messages);
+                }
             }
             sendOk(webSocket, "ROOM_LEFT");
         }
@@ -178,5 +197,26 @@ public class Server extends WebSocketServer {
             sb.append(CHARACTERS.charAt(index));
         }
         return sb.toString();
+    }
+
+    public void launchEmptyRoomCollector() {
+        Thread emptyRoomCollector = new Thread(() -> {
+            while(true) {
+                try {
+                    Thread.sleep(1000);
+                    System.out.println(gameRooms);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                for (Map.Entry<String, Room> entry : gameRooms.entrySet()) {
+                    if (entry.getValue().getMembers().isEmpty()) {
+                        gameRooms.remove(entry.getKey());
+                        rooms.remove(entry.getKey());
+                        System.out.println(entry.getKey() + " has been deleted");
+                    }
+                }
+            }
+        });
+        emptyRoomCollector.start();
     }
 }

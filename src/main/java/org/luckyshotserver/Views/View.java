@@ -1,11 +1,5 @@
 package org.luckyshotserver.Views;
 
-import java.io.IOException;
-
-
-//DA FARE ASTRATTA
-// PER FAR VEDERE CARATTERI UNICODE SU POWERSHELL (almeno):
-// $OutputEncoding = [Console]::InputEncoding = [Console]::OutputEncoding = New-Object System.Text.UTF8Encoding
 public class View {
     protected static final String ANSI_RESET = "\u001B[0m";
     protected static final String ANSI_BLACK = "\u001B[30m";
