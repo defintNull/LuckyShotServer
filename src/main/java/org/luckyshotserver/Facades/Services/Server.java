@@ -29,6 +29,7 @@ public class Server extends WebSocketServer {
     private Server() {
         super(new InetSocketAddress(port));
         launchEmptyRoomCollector();
+        HibernateService.getInstance();
     }
 
     public static Server getInstance() {
@@ -51,7 +52,22 @@ public class Server extends WebSocketServer {
             Room room = entry.getValue();
             if(room.getMembers().contains(webSocket)) {
                 if(room.getOwner().equals(webSocket)) {
+                    room.removeMember(webSocket);
+                    for(WebSocket member : room.getMembers()) {
+                        sendOk(member, "ROOM_CLOSED");
+                    }
                     gameRooms.remove(entry.getKey());
+                    break;
+                }
+                room.removeMember(webSocket);
+                ArrayList<Pair<MessageEnum, String>> messages = new ArrayList<>();
+                ArrayList<WebSocket> roomMembers = room.getMembers();
+                for (WebSocket member : roomMembers) {
+                    Pair<MessageEnum, String> m = new Pair<>(MessageEnum.OK, loggedUser.get(member).getUsername());
+                    messages.add(m);
+                }
+                for (WebSocket roomMember : roomMembers) {
+                    sendMessage(roomMember, messages);
                 }
             }
         }
@@ -125,7 +141,7 @@ public class Server extends WebSocketServer {
             Room currentRoom = gameRooms.get(params);
             if(webSocket.equals(currentRoom.getOwner())) {
                 currentRoom.removeMember(webSocket);
-                if(currentRoom.getMembers().size() > 1) {
+                if(!currentRoom.getMembers().isEmpty()) {
                     for(WebSocket member : currentRoom.getMembers()) {
                         sendOk(member, "ROOM_CLOSED");
                     }
@@ -142,6 +158,9 @@ public class Server extends WebSocketServer {
                 }
             }
             sendOk(webSocket, "ROOM_LEFT");
+        }
+        else if(command.equals("START_GAME")) {
+
         }
     }
 
