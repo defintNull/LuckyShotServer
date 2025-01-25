@@ -1,6 +1,7 @@
 package org.luckyshotserver.Facades;
 
 import org.java_websocket.WebSocket;
+import org.luckyshotserver.Facades.Services.Converters.ObjectConverter;
 import org.luckyshotserver.Facades.Services.Server;
 import org.luckyshotserver.Models.*;
 import org.luckyshotserver.Models.StateEffects.StateEffect;
@@ -14,9 +15,10 @@ public class MultiplayerGameFacade {
     private final int N_MAX_PLAYERS;
     private ArrayList<User> users;
     private final int MAX_ROUNDS = 3;
-    private ArrayList<WebSocket> websockets;
+    private ArrayList<WebSocket> webSockets;
     private MultiplayerGame game;
-    private Server server;
+    private Server server = Server.getInstance();
+    ObjectConverter converter = new ObjectConverter();
 
     public MultiplayerGameFacade(int MAX_ROOM_PLAYERS) {
         this.N_MAX_PLAYERS = MAX_ROOM_PLAYERS;
@@ -26,11 +28,14 @@ public class MultiplayerGameFacade {
     public void start(ArrayList<WebSocket> webSockets) {
         ArrayList<User> users = new ArrayList<>();
         ArrayList<HumanPlayer> players = new ArrayList<>();
+        this.webSockets = new ArrayList<>(webSockets);
 
         for(int i = 0; i < N_MAX_PLAYERS; i++) {
             users.add(server.getUserFromWebSocket(webSockets.get(i)));
             players.add(new HumanPlayer(users.get(i).getUsername(), users.get(i).getPowerups()));
         }
+
+        this.game = new MultiplayerGame(players);
 
         boolean gameEnded = false;
         int roundNumber = 1;
@@ -55,6 +60,10 @@ public class MultiplayerGameFacade {
             Random random = new Random();
             int turn = random.nextInt(N_MAX_PLAYERS);
 
+            System.out.println(converter.objToJSON(game.getRound()));
+            for(int i = 0; i < N_MAX_PLAYERS; i++) {
+                server.sendOk(webSockets.get(i), converter.objToJSON(game.getRound()));
+            }
             //singlePlayerGameView.showRoundStartingScreen(roundNumber);
             //singlePlayerGameView.showStateEffectActivation(stateEffect.getActivation());
 
@@ -150,8 +159,8 @@ public class MultiplayerGameFacade {
             Object obj = method.invoke(null);
             stateEffect = (StateEffect) obj;
         } catch (Exception e) {
-            for (WebSocket websocket : websockets) {
-                server.sendError(websocket, "FATAL");
+            for (WebSocket webSocket : webSockets) {
+                server.sendError(webSocket, "FATAL");
             }
         }
 

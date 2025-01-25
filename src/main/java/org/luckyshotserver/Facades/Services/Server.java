@@ -162,6 +162,12 @@ public class Server extends WebSocketServer {
         }
         else if(command.equals("START_GAME")) {
             Room currentRoom = gameRooms.get(params);
+            for(WebSocket member : currentRoom.getMembers()) {
+                if (!member.equals(webSocket)) {
+                    sendOk(member, "GAME_STARTED");
+                }
+            }
+            System.out.println("Game started");
             MultiplayerGameFacade multiplayerGameFacade = new MultiplayerGameFacade(MAX_ROOM_PLAYERS);
             multiplayerGameFacade.start(currentRoom.getMembers());
         }
@@ -193,7 +199,7 @@ public class Server extends WebSocketServer {
         webSocket.send("START");
         webSocket.send(s);
         webSocket.send("STOP");
-        System.out.println(s);
+        System.out.println("Sending: " + webSocket + " " + s);
     }
 
     public void sendMessage(WebSocket webSocket, ArrayList<Pair<MessageEnum, String>> message) {
@@ -231,17 +237,10 @@ public class Server extends WebSocketServer {
         Thread emptyRoomCollector = new Thread(() -> {
             while(true) {
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(2000);
                     System.out.println(gameRooms);
                 } catch (Exception e) {
                     e.printStackTrace();
-                }
-                for (Map.Entry<String, Room> entry : gameRooms.entrySet()) {
-                    if (entry.getValue().getMembers().isEmpty()) {
-                        gameRooms.remove(entry.getKey());
-                        rooms.remove(entry.getKey());
-                        System.out.println(entry.getKey() + " has been deleted");
-                    }
                 }
             }
         });
