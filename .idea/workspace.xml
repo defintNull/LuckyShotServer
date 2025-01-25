@@ -5,13 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f84402f0-3f7b-4b78-8d36-8e7aed489746" name="Changes" comment="Inizio multiplayer">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/luckyshotserver/Facades/MultiplayerGameFacade.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/luckyshotserver/Models/MultiplayerGame.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/luckyshotserver/Facades/LoginFacade.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/luckyshotserver/Facades/LoginFacade.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/luckyshotserver/Facades/Services/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/luckyshotserver/Facades/Services/Server.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/luckyshotserver/Facades/UserFacade.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/luckyshotserver/Facades/UserFacade.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/luckyshotserver/Models/HumanPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/luckyshotserver/Models/HumanPlayer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/luckyshotserver/Models/MultiplayerGame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/luckyshotserver/Models/MultiplayerGame.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -149,7 +144,7 @@
       <workItem from="1737773047711" duration="4000" />
       <workItem from="1737818743054" duration="223000" />
       <workItem from="1737819074734" duration="377000" />
-      <workItem from="1737820524306" duration="7044000" />
+      <workItem from="1737820524306" duration="7200000" />
     </task>
     <task id="LOCAL-00001" summary="Aggiunto Room">
       <option name="closed" value="true" />
@@ -167,7 +162,15 @@
       <option name="project" value="LOCAL" />
       <updated>1737745911213</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Inizio multiplayer">
+      <option name="closed" value="true" />
+      <created>1737832523345</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1737832523345</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

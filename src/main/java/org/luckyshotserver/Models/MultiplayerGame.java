@@ -7,7 +7,7 @@ public class MultiplayerGame {
     private ArrayList<HumanPlayer> players;
     private Round round;
 
-    public MultiplayerGame(HumanPlayer[] players) {
+    public MultiplayerGame(ArrayList<HumanPlayer> players) {
         setHumanPlayers(players);
     }
 
@@ -15,7 +15,7 @@ public class MultiplayerGame {
         HashMap<String, Object> stateMap = new HashMap<>();
 
         for(int i = 0; i < players.size(); i++) {
-            stateMap.put("player" + String.valueOf(i + 1), this.players.get(i));
+            stateMap.put("player" + (i + 1), this.players.get(i));
         }
         stateMap.put("round", this.round);
 
@@ -34,8 +34,7 @@ public class MultiplayerGame {
         return new ArrayList<>(players);
     }
 
-    public void setHumanPlayers(HumanPlayer[] players) {
-        assert this.players != null;
-        System.arraycopy(players, 0, this.players, 0, players.length);
+    public void setHumanPlayers(ArrayList<HumanPlayer> players) {
+        this.players = new ArrayList<>(players);
     }
 }
