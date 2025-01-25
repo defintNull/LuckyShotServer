@@ -29,4 +29,18 @@ public class UserFacade {
 
         return true;
     }
+
+    public boolean updateUser(User user) {
+        Session session = HibernateService.getInstance().getCurrentSession();
+        Transaction transaction;
+        try {
+            transaction = session.beginTransaction();
+            session.merge(user);
+            transaction.commit();
+        } catch (Exception e) {
+            return false;
+        }
+
+        return true;
+    }
 }

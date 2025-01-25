@@ -4,10 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f84402f0-3f7b-4b78-8d36-8e7aed489746" name="Changes" comment="Aggiunto Room">
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+    <list default="true" id="f84402f0-3f7b-4b78-8d36-8e7aed489746" name="Changes" comment="Inizio multiplayer">
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/luckyshotserver/Facades/MultiplayerGameFacade.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/luckyshotserver/Models/MultiplayerGame.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/luckyshotserver/Facades/LoginFacade.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/luckyshotserver/Facades/LoginFacade.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/luckyshotserver/Facades/Services/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/luckyshotserver/Facades/Services/Server.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/luckyshotserver/Facades/UserFacade.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/luckyshotserver/Facades/UserFacade.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/luckyshotserver/Models/HumanPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/luckyshotserver/Models/HumanPlayer.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,18 +64,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "ghigolini"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;ghigolini&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/defintNull/LuckyShotServer",
-    "accountId": "438337a6-71d5-4634-9b4e-7d7072d7dd99"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/defintNull/LuckyShotServer&quot;,
+    &quot;accountId&quot;: &quot;438337a6-71d5-4634-9b4e-7d7072d7dd99&quot;
   }
-}]]></component>
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
 }</component>
@@ -80,22 +84,22 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Gradle.LuckyShotServer [jar].executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/Lorenzo/Desktop/LuckyShotServer",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Gradle.LuckyShotServer [jar].executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Lorenzo/Desktop/LuckyShotServer&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="LuckyShotServer [jar]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
@@ -128,8 +132,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-fdfe4dae3a2d-intellij.indexing.shared.core-IU-243.21565.193" />
-        <option value="bundled-js-predefined-d6986cc7102b-e768b9ed790e-JavaScript-IU-243.21565.193" />
+        <option value="bundled-jdk-9823dce3aa75-125ca727e0f0-intellij.indexing.shared.core-IU-243.23654.153" />
+        <option value="bundled-js-predefined-d6986cc7102b-822845ee3bb5-JavaScript-IU-243.23654.153" />
       </set>
     </attachedChunks>
   </component>
@@ -141,7 +145,11 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1737569603828</updated>
-      <workItem from="1737731511249" duration="6601000" />
+      <workItem from="1737731511249" duration="9283000" />
+      <workItem from="1737773047711" duration="4000" />
+      <workItem from="1737818743054" duration="223000" />
+      <workItem from="1737819074734" duration="377000" />
+      <workItem from="1737820524306" duration="7044000" />
     </task>
     <task id="LOCAL-00001" summary="Aggiunto Room">
       <option name="closed" value="true" />
@@ -151,7 +159,15 @@
       <option name="project" value="LOCAL" />
       <updated>1737595662037</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="a">
+      <option name="closed" value="true" />
+      <created>1737745911213</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1737745911213</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -171,6 +187,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Room" />
     <MESSAGE value="Aggiunto Room" />
-    <option name="LAST_COMMIT_MESSAGE" value="Aggiunto Room" />
+    <MESSAGE value="a" />
+    <MESSAGE value="Inizio multiplayer" />
+    <option name="LAST_COMMIT_MESSAGE" value="Inizio multiplayer" />
   </component>
 </project>

@@ -7,6 +7,7 @@ import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 import org.luckyshotserver.Facades.LoginFacade;
+import org.luckyshotserver.Facades.MultiplayerGameFacade;
 import org.luckyshotserver.Facades.Services.Converters.ObjectConverter;
 import org.luckyshotserver.Facades.UserFacade;
 import org.luckyshotserver.Models.Enums.MessageEnum;
@@ -41,7 +42,6 @@ public class Server extends WebSocketServer {
 
     @Override
     public void onOpen(WebSocket webSocket, ClientHandshake clientHandshake) {
-        //Show Login Menu
         System.out.println("Client connected");
     }
 
@@ -76,6 +76,7 @@ public class Server extends WebSocketServer {
 
     @Override
     public void onMessage(WebSocket webSocket, String s) {
+        System.out.println(s);
         ArrayList<String> message = new ArrayList<>(Arrays.asList(s.split(":")));
         String command = message.removeFirst();
         String params = String.join(":", message);
@@ -160,8 +161,14 @@ public class Server extends WebSocketServer {
             sendOk(webSocket, "ROOM_LEFT");
         }
         else if(command.equals("START_GAME")) {
-
+            Room currentRoom = gameRooms.get(params);
+            MultiplayerGameFacade multiplayerGameFacade = new MultiplayerGameFacade(MAX_ROOM_PLAYERS);
+            multiplayerGameFacade.start(currentRoom.getMembers());
         }
+    }
+
+    public User getUserFromWebSocket(WebSocket webSocket) {
+        return loggedUser.get(webSocket);
     }
 
     @Override
@@ -186,6 +193,7 @@ public class Server extends WebSocketServer {
         webSocket.send("START");
         webSocket.send(s);
         webSocket.send("STOP");
+        System.out.println(s);
     }
 
     public void sendMessage(WebSocket webSocket, ArrayList<Pair<MessageEnum, String>> message) {
@@ -194,13 +202,14 @@ public class Server extends WebSocketServer {
             webSocket.send(messageEnumStringPair.getFirst().getMessage() + ":" + messageEnumStringPair.getSecond());
         }
         webSocket.send("STOP");
+        System.out.println(message);
     }
 
     private String generateRoomCode() {
         String uniqueString;
         do {
             uniqueString = generateUniqueString();
-        } while (rooms.contains(uniqueString)); // Assicura l'unicità
+        } while (rooms.contains(uniqueString));
 
         rooms.add(uniqueString);
         return uniqueString;

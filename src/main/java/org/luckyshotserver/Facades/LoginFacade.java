@@ -19,7 +19,6 @@ public class LoginFacade {
     public User login(WebSocket webSocket, String username, String password) {
         Session session = HibernateService.getInstance().getCurrentSession();
         User user = null;
-        Server server = Server.getInstance();
 
         try {
             user = session.createQuery("from User where username = :username", User.class)

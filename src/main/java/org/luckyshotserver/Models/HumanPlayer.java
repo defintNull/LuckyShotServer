@@ -2,26 +2,20 @@ package org.luckyshotserver.Models;
 
 import org.luckyshotserver.Models.Powerups.Powerup;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class HumanPlayer extends Player{
-    private long userId;
+    private String username;
     private int score;
     private double multiplier;
     private int comboCounter;
     private HashMap<Powerup, Integer> powerups;
     private int xp;
 
-    public HumanPlayer(long userId, HashMap<Powerup, Integer> powerups) {
-        this.userId = userId;
+    public HumanPlayer(String username, HashMap<Powerup, Integer> powerups) {
+        this.username = username;
         this.powerups = powerups;
-//        this.powerups = new HashMap<>();
-//        Bomb b = Bomb.getInstance();
-//        this.powerups.put(b, 2);
-//        Shield s = Shield.getInstance();
-//        this.powerups.put(s, 2);
-//        PoisonBullet pb = PoisonBullet.getInstance();
-//        this.powerups.put(pb, 2);
         this.xp = 0;
         this.multiplier = 1;
         this.comboCounter = 0;
