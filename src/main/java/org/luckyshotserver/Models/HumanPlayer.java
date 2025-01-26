@@ -81,4 +81,12 @@ public class HumanPlayer extends Player{
     public void addXp(int xp) {
         this.xp += xp;
     }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 }

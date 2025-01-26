@@ -26,6 +26,8 @@ public class Server extends WebSocketServer {
     private final ConcurrentHashMap<String, Room> gameRooms = new ConcurrentHashMap<>();
     private final HashSet<String> rooms = new HashSet<>();
     private final int MAX_ROOM_PLAYERS = 2;
+    //String, MultiplayerGameFacade, Thread
+    private HashMap<String, ArrayList<Object>> games = new HashMap<>();
 
     private Server() {
         super(new InetSocketAddress(port));
@@ -162,14 +164,26 @@ public class Server extends WebSocketServer {
         }
         else if(command.equals("START_GAME")) {
             Room currentRoom = gameRooms.get(params);
+            MultiplayerGameFacade multiplayerGameFacade = new MultiplayerGameFacade(currentRoom.getMembers());
+            Thread thread = new Thread(multiplayerGameFacade::start);
+            games.put(params, new ArrayList<>(Arrays.asList(multiplayerGameFacade, thread)));
             for(WebSocket member : currentRoom.getMembers()) {
                 if (!member.equals(webSocket)) {
                     sendOk(member, "GAME_STARTED");
                 }
             }
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            thread.start();
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             System.out.println("Game started");
-            MultiplayerGameFacade multiplayerGameFacade = new MultiplayerGameFacade(MAX_ROOM_PLAYERS);
-            multiplayerGameFacade.start(currentRoom.getMembers());
         }
     }
 
@@ -193,6 +207,10 @@ public class Server extends WebSocketServer {
 
     public void sendOk(WebSocket webSocket, String message) {
         sendMessage(webSocket, MessageEnum.OK + ":" + message);
+    }
+
+    public void sendCustom(WebSocket webSocket, MessageEnum messageEnum, String message) {
+        sendMessage(webSocket, messageEnum + ":" + message);
     }
 
     private void sendMessage(WebSocket webSocket, String s) {
@@ -234,16 +252,16 @@ public class Server extends WebSocketServer {
     }
 
     public void launchEmptyRoomCollector() {
-        Thread emptyRoomCollector = new Thread(() -> {
-            while(true) {
-                try {
-                    Thread.sleep(2000);
-                    System.out.println(gameRooms);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        emptyRoomCollector.start();
+//        Thread emptyRoomCollector = new Thread(() -> {
+//            while(true) {
+//                try {
+//                    Thread.sleep(2000);
+//                    System.out.println(gameRooms);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
+//        emptyRoomCollector.start();
     }
 }

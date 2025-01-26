@@ -8,6 +8,8 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/luckyshotserver/Facades/MultiplayerGameFacade.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/luckyshotserver/Facades/MultiplayerGameFacade.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/luckyshotserver/Facades/Services/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/luckyshotserver/Facades/Services/Server.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/luckyshotserver/Models/Enums/MessageEnum.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/luckyshotserver/Models/Enums/MessageEnum.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/luckyshotserver/Models/HumanPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/luckyshotserver/Models/HumanPlayer.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -145,7 +147,8 @@
       <workItem from="1737773047711" duration="4000" />
       <workItem from="1737818743054" duration="223000" />
       <workItem from="1737819074734" duration="377000" />
-      <workItem from="1737820524306" duration="10249000" />
+      <workItem from="1737820524306" duration="10515000" />
+      <workItem from="1737902175896" duration="20017000" />
     </task>
     <task id="LOCAL-00001" summary="Aggiunto Room">
       <option name="closed" value="true" />
@@ -179,7 +182,15 @@
       <option name="project" value="LOCAL" />
       <updated>1737832665203</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Inizio multiplayer">
+      <option name="closed" value="true" />
+      <created>1737835966754</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1737835966754</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

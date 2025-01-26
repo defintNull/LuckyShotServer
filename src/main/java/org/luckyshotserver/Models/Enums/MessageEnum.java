@@ -2,7 +2,14 @@ package org.luckyshotserver.Models.Enums;
 
 public enum MessageEnum {
     OK("OK"),
-    ERROR("ERROR");
+    ERROR("ERROR"),
+    INPUT("INPUT"),
+    ADD_ACTION("ADD_ACTION"),
+    SHOW("SHOW"),
+    SHOW_ERROR("SHOW_ERROR"),
+    REFRESH("REFRESH"),
+    SHOW_BULLETS("SHOW_BULLETS"),
+    SHOW_GAME_STATE("SHOW_GAME_STATE");
 
     private final String message;
 
