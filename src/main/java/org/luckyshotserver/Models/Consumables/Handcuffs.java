@@ -1,6 +1,7 @@
 package org.luckyshotserver.Models.Consumables;
 
 import org.luckyshotserver.Models.Enums.Probability;
+import org.luckyshotserver.Models.MultiplayerGame;
 import org.luckyshotserver.Models.SinglePlayerGame;
 
 public class Handcuffs extends Consumable{
@@ -17,8 +18,8 @@ public class Handcuffs extends Consumable{
         return instance;
     }
 
-    public String use(SinglePlayerGame singlePlayerGame) {
-        singlePlayerGame.getRound().getTurn().getOtherPlayer().setHandcuffed(true);
+    public String use(MultiplayerGame multiplayerGame) {
+        multiplayerGame.getRound().getTurn().getOtherPlayer().setHandcuffed(true);
         return "";
     }
 

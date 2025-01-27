@@ -1,5 +1,6 @@
 package org.luckyshotserver.Models.Powerups;
 
+import org.luckyshotserver.Models.MultiplayerGame;
 import org.luckyshotserver.Models.SinglePlayerGame;
 
 public class PoisonBullet extends Powerup{
@@ -10,8 +11,8 @@ public class PoisonBullet extends Powerup{
         super(COST);
     }
 
-    public void use(SinglePlayerGame singlePlayerGame) {
-        singlePlayerGame.getRound().getTurn().setBulletPoisoned(true);
+    public void use(MultiplayerGame multiplayerGame) {
+        multiplayerGame.getRound().getTurn().setBulletPoisoned(true);
     }
 
     public static PoisonBullet getInstance() {

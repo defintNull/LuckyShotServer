@@ -1,5 +1,6 @@
 package org.luckyshotserver.Models.Powerups;
 
+import org.luckyshotserver.Models.MultiplayerGame;
 import org.luckyshotserver.Models.SinglePlayerGame;
 
 public class Shield extends Powerup{
@@ -10,8 +11,8 @@ public class Shield extends Powerup{
         super(COST);
     }
 
-    public void use(SinglePlayerGame singlePlayerGame) {
-        singlePlayerGame.getHumanPlayer().setShieldActive(true);
+    public void use(MultiplayerGame multiplayerGame) {
+        multiplayerGame.getRound().getTurn().getCurrentPlayer().setShieldActive(true);
     }
 
     public static Shield getInstance() {

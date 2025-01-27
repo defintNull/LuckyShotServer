@@ -1,5 +1,6 @@
 package org.luckyshotserver.Models.Powerups;
 
+import org.luckyshotserver.Models.MultiplayerGame;
 import org.luckyshotserver.Models.SinglePlayerGame;
 
 import java.io.Serializable;
@@ -11,7 +12,7 @@ public abstract class Powerup implements PowerupInterface, Serializable {
         this.cost = cost;
     }
 
-    public void use(SinglePlayerGame singlePlayerGame) {
+    public void use(MultiplayerGame multiplayerGame) {
 
     }
 

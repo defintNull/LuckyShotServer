@@ -1,6 +1,7 @@
 package org.luckyshotserver.Models.Consumables;
 
 import org.luckyshotserver.Models.Enums.Probability;
+import org.luckyshotserver.Models.MultiplayerGame;
 import org.luckyshotserver.Models.SinglePlayerGame;
 
 public class HealthPotion extends Consumable{
@@ -17,8 +18,8 @@ public class HealthPotion extends Consumable{
         return instance;
     }
 
-    public String use(SinglePlayerGame singlePlayerGame) {
-        singlePlayerGame.getRound().getTurn().getCurrentPlayer().setLives(singlePlayerGame.getRound().getTurn().getCurrentPlayer().getLives() + 1);
+    public String use(MultiplayerGame multiplayerGame) {
+        multiplayerGame.getRound().getTurn().getCurrentPlayer().setLives(multiplayerGame.getRound().getTurn().getCurrentPlayer().getLives() + 1);
         return "";
     }
 

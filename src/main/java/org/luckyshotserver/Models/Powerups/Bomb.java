@@ -1,5 +1,6 @@
 package org.luckyshotserver.Models.Powerups;
 
+import org.luckyshotserver.Models.MultiplayerGame;
 import org.luckyshotserver.Models.SinglePlayerGame;
 
 import java.io.Serializable;
@@ -12,10 +13,10 @@ public class Bomb extends Powerup {
         super(COST);
     }
 
-    public void use(SinglePlayerGame singlePlayerGame) {
-        singlePlayerGame.getHumanPlayer().setLives(singlePlayerGame.getHumanPlayer().getLives() - 1);
-        singlePlayerGame.getBot().setLives(singlePlayerGame.getBot().getLives() - 1);
-
+    public void use(MultiplayerGame multiplayerGame) {
+        for(int i = 0; i < multiplayerGame.getHumanPlayers().size(); i++) {
+            multiplayerGame.getHumanPlayers().get(i).setLives(multiplayerGame.getHumanPlayers().get(i).getLives() - 1);
+        }
     }
 
     public static Bomb getInstance() {

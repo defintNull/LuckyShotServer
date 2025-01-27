@@ -1,6 +1,7 @@
 package org.luckyshotserver.Models.Consumables;
 
 import org.luckyshotserver.Models.Enums.Probability;
+import org.luckyshotserver.Models.MultiplayerGame;
 import org.luckyshotserver.Models.SinglePlayerGame;
 
 public abstract class Consumable implements ConsumableInterface{
@@ -18,7 +19,7 @@ public abstract class Consumable implements ConsumableInterface{
         return this.getClass().getSimpleName();
     }
 
-    public String use(SinglePlayerGame singlePlayerGame) {
+    public String use(MultiplayerGame multiplayerGame) {
         return "Nothing happened!";
     }
 

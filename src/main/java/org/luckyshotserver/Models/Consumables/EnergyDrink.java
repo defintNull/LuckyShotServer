@@ -1,6 +1,7 @@
 package org.luckyshotserver.Models.Consumables;
 
 import org.luckyshotserver.Models.Enums.Probability;
+import org.luckyshotserver.Models.MultiplayerGame;
 import org.luckyshotserver.Models.SinglePlayerGame;
 
 public class EnergyDrink extends Consumable{
@@ -16,7 +17,7 @@ public class EnergyDrink extends Consumable{
         return instance;
     }
 
-    public String use(SinglePlayerGame singlePlayerGame) {
+    public String use(MultiplayerGame multiplayerGame) {
 
         return "";
     }

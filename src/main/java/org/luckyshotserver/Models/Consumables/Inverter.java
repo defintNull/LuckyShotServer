@@ -2,6 +2,7 @@ package org.luckyshotserver.Models.Consumables;
 
 import org.luckyshotserver.Models.Enums.Probability;
 import org.luckyshotserver.Models.Gun;
+import org.luckyshotserver.Models.MultiplayerGame;
 import org.luckyshotserver.Models.SinglePlayerGame;
 
 public class Inverter extends Consumable{
@@ -17,7 +18,7 @@ public class Inverter extends Consumable{
         return instance;
     }
 
-    public String use(SinglePlayerGame singlePlayerGame) {
+    public String use(MultiplayerGame multiplayerGame) {
         int type = Gun.getInstance().getBullet(Gun.getInstance().getBullets().size() - 1).getType();
         Gun.getInstance().getBullet(Gun.getInstance().getBullets().size() - 1).setType((type + 1) % 2);
         return "";

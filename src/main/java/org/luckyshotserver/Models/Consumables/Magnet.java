@@ -2,6 +2,7 @@ package org.luckyshotserver.Models.Consumables;
 
 import org.luckyshotserver.Models.Enums.Probability;
 import org.luckyshotserver.Models.Gun;
+import org.luckyshotserver.Models.MultiplayerGame;
 import org.luckyshotserver.Models.SinglePlayerGame;
 
 public class Magnet extends Consumable{
@@ -17,7 +18,7 @@ public class Magnet extends Consumable{
         return instance;
     }
 
-    public String use(SinglePlayerGame singlePlayerGame) {
+    public String use(MultiplayerGame multiplayerGame) {
         int type = Gun.getInstance().popBullet().getType();
         return String.valueOf(type);
     }

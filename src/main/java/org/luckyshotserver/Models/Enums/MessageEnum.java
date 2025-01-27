@@ -10,7 +10,9 @@ public enum MessageEnum {
     SHOW_ERROR("SHOW_ERROR"),
     REFRESH("REFRESH"),
     SHOW_BULLETS("SHOW_BULLETS"),
-    SHOW_GAME_STATE("SHOW_GAME_STATE");
+    SHOW_GAME_STATE("SHOW_GAME_STATE"),
+    END("END"),
+    ADD_ERROR("ADD_ERROR");
 
     private final String message;
 

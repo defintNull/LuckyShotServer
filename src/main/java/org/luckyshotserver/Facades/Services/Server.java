@@ -27,12 +27,13 @@ public class Server extends WebSocketServer {
     private final HashSet<String> rooms = new HashSet<>();
     private final int MAX_ROOM_PLAYERS = 2;
     //String, MultiplayerGameFacade, Thread
-    private HashMap<String, ArrayList<Object>> games = new HashMap<>();
+    private ConcurrentHashMap<String, ArrayList<Object>> games = new ConcurrentHashMap<>();
 
     private Server() {
         super(new InetSocketAddress(port));
         launchEmptyRoomCollector();
         HibernateService.getInstance();
+
     }
 
     public static Server getInstance() {
@@ -186,6 +187,27 @@ public class Server extends WebSocketServer {
             }
             thread.start();
             System.out.println("Game started");
+        }
+        else if(command.equals("GAME_ACTION")) {
+            ArrayList<String> json = new ArrayList<>(Arrays.asList(params.split(",")));
+            String roomCode = json.removeFirst();
+            ((MultiplayerGameFacade)games.get(roomCode).getFirst()).setInputBuffer(json);
+        }
+        else if(command.equals("GAME_END")) {
+            if(games.get(params) != null) {
+                ((Thread)games.get(params).get(1)).interrupt();
+                games.remove(params);
+                gameRooms.remove(params);
+            }
+        }
+        else if(command.equals("ACK")) {
+            Room currentRoom = gameRooms.get(params);
+            for(int i = 0; i< currentRoom.getMembers().size(); i++) {
+                if(currentRoom.getMembers().get(i).equals(webSocket)) {
+                    ((MultiplayerGameFacade)games.get(params).get(0)).setAck(true, i);
+                    break;
+                }
+            }
         }
     }
 

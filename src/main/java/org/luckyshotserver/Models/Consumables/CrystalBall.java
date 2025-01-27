@@ -2,6 +2,7 @@ package org.luckyshotserver.Models.Consumables;
 
 import org.luckyshotserver.Models.Enums.Probability;
 import org.luckyshotserver.Models.Gun;
+import org.luckyshotserver.Models.MultiplayerGame;
 import org.luckyshotserver.Models.SinglePlayerGame;
 
 import java.util.Random;
@@ -19,7 +20,7 @@ public class CrystalBall extends Consumable {
         return instance;
     }
 
-    public String use(SinglePlayerGame singlePlayerGame) {
+    public String use(MultiplayerGame multiplayerGame) {
         Gun gun = Gun.getInstance();
         Random rand = new Random();
         int r = rand.nextInt(0, gun.getBullets().size());
