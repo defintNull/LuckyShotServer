@@ -19,8 +19,10 @@ public class HealthPotion extends Consumable{
     }
 
     public String use(MultiplayerGame multiplayerGame) {
-        multiplayerGame.getRound().getTurn().getCurrentPlayer().setLives(multiplayerGame.getRound().getTurn().getCurrentPlayer().getLives() + 1);
-        return "";
+        if(multiplayerGame.getRound().getTurn().getCurrentPlayer().getLives() < multiplayerGame.getRound().getMaxLives()) {
+            multiplayerGame.getRound().getTurn().getCurrentPlayer().setLives(multiplayerGame.getRound().getTurn().getCurrentPlayer().getLives() + 1);
+        }
+        return "NULL";
     }
 
     public String getEffect(String effect) {

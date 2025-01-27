@@ -79,7 +79,11 @@ public class Server extends WebSocketServer {
 
     @Override
     public void onMessage(WebSocket webSocket, String s) {
-        System.out.println(s);
+        try {
+            System.out.println(getUserFromWebSocket(webSocket).getUsername() + ": " + s);
+        } catch (Exception e) {
+
+        }
         ArrayList<String> message = new ArrayList<>(Arrays.asList(s.split(":")));
         String command = message.removeFirst();
         String params = String.join(":", message);
@@ -241,7 +245,11 @@ public class Server extends WebSocketServer {
         webSocket.send("START");
         webSocket.send(s);
         webSocket.send("STOP");
-        System.out.println("Sending: " + webSocket + " " + s);
+        try {
+            System.out.println("Sending: " + getUserFromWebSocket(webSocket).getUsername() + ": " + s);
+        } catch (Exception e) {
+
+        }
     }
 
     public void sendMessage(WebSocket webSocket, ArrayList<Pair<MessageEnum, String>> message) {

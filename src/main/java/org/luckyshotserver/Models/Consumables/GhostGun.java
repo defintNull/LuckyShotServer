@@ -20,7 +20,7 @@ public class GhostGun extends Consumable{
 
     public String use(MultiplayerGame multiplayerGame) {
         Gun.getInstance().setDamage(2);
-        return "";
+        return "NULL";
     }
 
     public String getEffect(String effect) {

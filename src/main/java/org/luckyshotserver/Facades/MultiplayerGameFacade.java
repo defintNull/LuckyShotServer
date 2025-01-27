@@ -67,6 +67,7 @@ public class MultiplayerGameFacade {
     public void waitAck(int t, int n) {
         int nAcks = 0;
         while(nAcks < n) {
+            nAcks = 0;
             for(int i = 0; i < N_MAX_PLAYERS; i++) {
                 if(ack.get(i)) {
                     nAcks += 1;
@@ -114,7 +115,7 @@ public class MultiplayerGameFacade {
 
             boolean roundEnded = false;
             Random random = new Random();
-            int turn = random.nextInt(N_MAX_PLAYERS);
+            turn = random.nextInt(N_MAX_PLAYERS);
 
             for(int i = 0; i < N_MAX_PLAYERS; i++) {
                 server.sendCustom(webSockets.get(i), MessageEnum.SHOW_GAME_STATE, getGameMap());
@@ -633,7 +634,7 @@ public class MultiplayerGameFacade {
             }
 
             for(int i=0; i<N_MAX_PLAYERS; i++) {
-                server.sendCustom(webSockets.get(i), MessageEnum.ADD_ACTION, "CONSUMABLE,ACTIVATION," + ((HumanPlayer)game.getRound().getTurn().getCurrentPlayer()).getUsername() + "," + obj.getClass().getSimpleName());
+                server.sendCustom(webSockets.get(i), MessageEnum.ADD_ACTION, "CONSUMABLE,ACTIVATION," + obj.getClass().getSimpleName() + "," + ((HumanPlayer)game.getRound().getTurn().getCurrentPlayer()).getUsername());
             }
             waitAck(50, 2);
             String effect = ((Consumable) obj).use(game);
@@ -773,7 +774,6 @@ public class MultiplayerGameFacade {
 
     public boolean shootingPhase(String target) {
         boolean changeTurn = false;
-        boolean shot = false;
         int score = 0;
 
         Player currentPlayer = game.getRound().getTurn().getCurrentPlayer();
@@ -801,10 +801,8 @@ public class MultiplayerGameFacade {
                     }
 
                     //Score system reset
-                    if(game.getRound().getTurn().getCurrentPlayer().getClass() == HumanPlayer.class) {
-                        ((HumanPlayer) game.getRound().getTurn().getCurrentPlayer()).setComboCounter(0);
-                        ((HumanPlayer) game.getRound().getTurn().getCurrentPlayer()).setMultiplier(1);
-                    }
+                    ((HumanPlayer) game.getRound().getTurn().getCurrentPlayer()).setComboCounter(0);
+                    ((HumanPlayer) game.getRound().getTurn().getCurrentPlayer()).setMultiplier(1);
                 } else {
                     for(int i=0; i<N_MAX_PLAYERS; i++) {
                         server.sendCustom(webSockets.get(i), MessageEnum.ADD_ACTION, "POWERUP,EFFECT," + Shield.class.getSimpleName() + "," + ((HumanPlayer) game.getRound().getTurn().getCurrentPlayer()).getUsername());
@@ -827,7 +825,6 @@ public class MultiplayerGameFacade {
                 // XP
                 ((HumanPlayer) game.getRound().getTurn().getCurrentPlayer()).addXp(20);
             }
-            shot = true;
         } else if(target.equals("2")) {
             if(currentBullet.getType() == 1) {
                 Player otherPlayer = game.getRound().getTurn().getOtherPlayer();
@@ -871,9 +868,9 @@ public class MultiplayerGameFacade {
                 ((HumanPlayer) game.getRound().getTurn().getCurrentPlayer()).setComboCounter(0);
                 ((HumanPlayer) game.getRound().getTurn().getCurrentPlayer()).setMultiplier(1);
             }
-            shot = true;
             changeTurn = true;
         } else {
+            Gun.getInstance().setDamage(1);
             return false;
         }
 

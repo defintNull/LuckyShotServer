@@ -19,7 +19,7 @@ public class EnergyDrink extends Consumable{
 
     public String use(MultiplayerGame multiplayerGame) {
 
-        return "";
+        return "NULL";
     }
 
     public String getEffect(String effect) {

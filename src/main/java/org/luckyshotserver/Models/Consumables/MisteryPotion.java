@@ -30,7 +30,7 @@ public class MisteryPotion extends Consumable{
             multiplayerGame.getRound().getTurn().getCurrentPlayer().setLives(lives - 2);
         }
 
-        return "";
+        return "NULL";
     }
 
     public String getEffect(String effect) {

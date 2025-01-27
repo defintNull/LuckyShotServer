@@ -20,7 +20,7 @@ public class Handcuffs extends Consumable{
 
     public String use(MultiplayerGame multiplayerGame) {
         multiplayerGame.getRound().getTurn().getOtherPlayer().setHandcuffed(true);
-        return "";
+        return "NULL";
     }
 
     public String getEffect(String effect) {

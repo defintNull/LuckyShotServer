@@ -21,7 +21,7 @@ public class Inverter extends Consumable{
     public String use(MultiplayerGame multiplayerGame) {
         int type = Gun.getInstance().getBullet(Gun.getInstance().getBullets().size() - 1).getType();
         Gun.getInstance().getBullet(Gun.getInstance().getBullets().size() - 1).setType((type + 1) % 2);
-        return "";
+        return "NULL";
     }
 
     public String getEffect(String effect) {
