@@ -164,13 +164,20 @@ public class Server extends WebSocketServer {
         }
         else if(command.equals("START_GAME")) {
             Room currentRoom = gameRooms.get(params);
+            for(WebSocket member : currentRoom.getMembers()) {
+                if (!member.equals(webSocket)) {
+                    sendCustom(member, MessageEnum.READY, "READY");
+                }
+            }
+        }
+        else if(command.equals("READY")) {
+            //DA CAMBIARE IN CASO DI PIù DI 2 GIOCATORI CON UN ARRAY CON CONTROLLO READY
+            Room currentRoom = gameRooms.get(params);
             MultiplayerGameFacade multiplayerGameFacade = new MultiplayerGameFacade(currentRoom.getMembers());
             Thread thread = new Thread(multiplayerGameFacade::start);
             games.put(params, new ArrayList<>(Arrays.asList(multiplayerGameFacade, thread)));
             for(WebSocket member : currentRoom.getMembers()) {
-                if (!member.equals(webSocket)) {
-                    sendOk(member, "GAME_STARTED");
-                }
+                sendOk(member, "GAME_STARTED");
             }
             try {
                 Thread.sleep(50);
@@ -178,11 +185,6 @@ public class Server extends WebSocketServer {
                 e.printStackTrace();
             }
             thread.start();
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
             System.out.println("Game started");
         }
     }

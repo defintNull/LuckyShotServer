@@ -43,6 +43,12 @@ public class MultiplayerGameFacade {
         int roundNumber = 1;
 
         while(!gameEnded) {
+            //Problema di sincrono
+            try {
+                Thread.sleep(1000);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             //Inizio di un round
             StateEffect stateEffect = getRandomStateEffect();
             Round round = new Round(roundNumber, stateEffect);
