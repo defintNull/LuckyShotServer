@@ -677,7 +677,6 @@ public class MultiplayerGameFacade {
                     }
                 }
                 waitAck(50, 1);
-                // commento per ricordarci che sta qua nel caso in cui non dobbiamo usare charAt(0) al primo inidice
                 consumableToSteal = inputBuffer.getFirst().charAt(0);
 
                 boolean ok = false;
@@ -717,7 +716,7 @@ public class MultiplayerGameFacade {
 
                         if(!checkFog2) {
                             for(int i=0; i<N_MAX_PLAYERS; i++) {
-                                server.sendCustom(webSockets.get(i), MessageEnum.ADD_ACTION, "CONSUMABLE,ACTIVATION," + ((HumanPlayer) game.getRound().getTurn().getCurrentPlayer()).getUsername() + "," + obj2.getClass().getSimpleName());
+                                server.sendCustom(webSockets.get(i), MessageEnum.ADD_ACTION, "CONSUMABLE,ACTIVATION," + obj2.getClass().getSimpleName() + "," + ((HumanPlayer) game.getRound().getTurn().getCurrentPlayer()).getUsername());
                             }
                             waitAck(50, 2);
                             String effect2 = ((Consumable)obj2).use(game);
