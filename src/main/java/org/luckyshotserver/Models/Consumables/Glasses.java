@@ -30,4 +30,8 @@ public class Glasses extends Consumable{
     public String toString() {
         return "Glasses";
     }
+
+    public boolean visibilityEffect() {
+        return false;
+    }
 }

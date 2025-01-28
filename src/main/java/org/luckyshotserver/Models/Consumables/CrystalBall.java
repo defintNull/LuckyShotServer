@@ -38,4 +38,8 @@ public class CrystalBall extends Consumable {
     public String toString() {
         return "Crystal ball";
     }
+
+    public boolean visibilityEffect() {
+        return false;
+    }
 }

@@ -29,4 +29,8 @@ public class EnergyDrink extends Consumable{
     public String toString() {
         return "Energy drink";
     }
+
+    public boolean visibilityEffect() {
+        return false;
+    }
 }

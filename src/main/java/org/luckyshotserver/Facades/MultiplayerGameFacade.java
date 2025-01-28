@@ -24,7 +24,7 @@ import java.util.Random;
 public class MultiplayerGameFacade {
     private final int N_MAX_PLAYERS;
     private ArrayList<User> users = new ArrayList<>();
-    private final int MAX_ROUNDS = 3;
+    private final int MAX_ROUNDS = 1;
     private ArrayList<WebSocket> webSockets;
     private MultiplayerGame game;
     private Server server = Server.getInstance();
@@ -207,6 +207,11 @@ public class MultiplayerGameFacade {
         }
 
         for(int i = 0; i < N_MAX_PLAYERS; i++) {
+            server.sendCustom(webSockets.get(i), MessageEnum.REFRESH, "ALL");
+        }
+        waitAck(50, 2);
+
+        for(int i = 0; i < N_MAX_PLAYERS; i++) {
             if (iPlayerAlive == -1) {
                 server.sendCustom(webSockets.get(i), MessageEnum.ADD_ACTION, "WIN,-1");
             } else if (i == iPlayerAlive) {
@@ -324,7 +329,7 @@ public class MultiplayerGameFacade {
         if(game.getRound().getTurn().getOtherPlayer().isHandcuffed()) {
             game.getRound().getTurn().getOtherPlayer().setHandcuffed(false);
             for(int i = 0; i < N_MAX_PLAYERS; i++) {
-                server.sendCustom(webSockets.get(i), MessageEnum.ADD_ACTION, "HANDCUFFS," + ((HumanPlayer)game.getRound().getTurn().getOtherPlayer()).getUsername() + "," + 0);
+                server.sendCustom(webSockets.get(i), MessageEnum.ADD_ACTION, "HANDCUFFS," + ((HumanPlayer)game.getRound().getTurn().getOtherPlayer()).getUsername() + "," + 0 + "," + (i == turn));
             }
             waitAck(50, 2);
         }
@@ -340,32 +345,33 @@ public class MultiplayerGameFacade {
             }
             waitAck(50, 2);
 
-            if(!game.getRound().getTurn().getCurrentPlayer().isHandcuffed()) {
-                // Se la pistola è vuota, assegno i consumabili e la ricarico
-                if(gun.isEmpty()) {
-                    drawConsumables();
-                    for(int i = 0; i < N_MAX_PLAYERS; i++) {
-                        server.sendCustom(webSockets.get(i), MessageEnum.SHOW_GAME_STATE, getGameMap());
-                    }
-                    waitAck(50, 2);
-                    for(int i = 0; i < N_MAX_PLAYERS; i++) {
-                        server.sendCustom(webSockets.get(i), MessageEnum.SHOW, "ACTIONS");
-                    }
-                    waitAck(50, 2);
-
-                    loadGun();
-                    for(int i = 0; i < N_MAX_PLAYERS; i++) {
-                        server.sendCustom(webSockets.get(i), MessageEnum.SHOW_GAME_STATE, getGameMap());
-                    }
-                    waitAck(50,2);
-                    for(int i = 0; i < N_MAX_PLAYERS; i++) {
-                        server.sendCustom(webSockets.get(i), MessageEnum.SHOW, "ACTIONS");
-                    }
-                    waitAck(50, 2);
+            // Se la pistola è vuota, assegno i consumabili e la ricarico
+            if(gun.isEmpty()) {
+                drawConsumables();
+                for(int i = 0; i < N_MAX_PLAYERS; i++) {
+                    server.sendCustom(webSockets.get(i), MessageEnum.SHOW_GAME_STATE, getGameMap());
                 }
+                waitAck(50, 2);
+                for(int i = 0; i < N_MAX_PLAYERS; i++) {
+                    server.sendCustom(webSockets.get(i), MessageEnum.SHOW, "ACTIONS");
+                }
+                waitAck(50, 2);
 
+                loadGun();
+                for(int i = 0; i < N_MAX_PLAYERS; i++) {
+                    server.sendCustom(webSockets.get(i), MessageEnum.SHOW_GAME_STATE, getGameMap());
+                }
+                waitAck(50,2);
+                for(int i = 0; i < N_MAX_PLAYERS; i++) {
+                    server.sendCustom(webSockets.get(i), MessageEnum.SHOW, "ACTIONS");
+                }
+                waitAck(50, 2);
+            }
+
+            if(!game.getRound().getTurn().getCurrentPlayer().isHandcuffed()) {
                 boolean validInput = false;
                 server.sendCustom(webSockets.get(turn), MessageEnum.INPUT, "ACTION");
+
 
                 while(inputBuffer.isEmpty()) {
                     try {
@@ -406,7 +412,7 @@ public class MultiplayerGameFacade {
                 inputBuffer.clear();
             } else {
                 for(int i = 0; i < N_MAX_PLAYERS; i++) {
-                    server.sendCustom(webSockets.get(i), MessageEnum.ADD_ACTION, "HANDCUFFS," + ((HumanPlayer)game.getRound().getTurn().getOtherPlayer()).getUsername() + "," + 1);
+                    server.sendCustom(webSockets.get(i), MessageEnum.ADD_ACTION, "HANDCUFFS," + ((HumanPlayer)game.getRound().getTurn().getOtherPlayer()).getUsername() + "," + 1 + "," + (i == turn));
                 }
                 waitAck(50, 2);
                 changeTurn = true;
@@ -638,10 +644,15 @@ public class MultiplayerGameFacade {
             }
             waitAck(50, 2);
             String effect = ((Consumable) obj).use(game);
-            for(int i=0; i<N_MAX_PLAYERS; i++) {
-                server.sendCustom(webSockets.get(i), MessageEnum.ADD_ACTION, "CONSUMABLE,EFFECT," + obj.getClass().getSimpleName() + "," + effect);
+            if(((Consumable) obj).visibilityEffect()) {
+                for (int i = 0; i < N_MAX_PLAYERS; i++) {
+                    server.sendCustom(webSockets.get(i), MessageEnum.ADD_ACTION, "CONSUMABLE,EFFECT," + obj.getClass().getSimpleName() + "," + effect);
+                }
+                waitAck(50, 2);
+            } else {
+                server.sendCustom(webSockets.get(turn), MessageEnum.ADD_ACTION, "CONSUMABLE,EFFECT," + obj.getClass().getSimpleName() + "," + effect);
+                waitAck(50, 1);
             }
-            waitAck(50, 2);
             // Energy drink actions
             if(obj.getClass() == EnergyDrink.class) {
                 if(game.getRound().getTurn().getOtherPlayer().getConsumables().isEmpty()){
@@ -720,10 +731,16 @@ public class MultiplayerGameFacade {
                             }
                             waitAck(50, 2);
                             String effect2 = ((Consumable)obj2).use(game);
-                            for(int i=0; i<N_MAX_PLAYERS; i++) {
-                                server.sendCustom(webSockets.get(i), MessageEnum.ADD_ACTION, "CONSUMABLE,EFFECT," + obj2.getClass().getSimpleName() + "," + effect2);
+                            if(((Consumable) obj2).visibilityEffect()) {
+                                for (int i = 0; i < N_MAX_PLAYERS; i++) {
+                                    server.sendCustom(webSockets.get(i), MessageEnum.ADD_ACTION, "CONSUMABLE,EFFECT," + obj2.getClass().getSimpleName() + "," + effect2);
+                                }
+                                waitAck(50, 2);
                             }
-                            waitAck(50, 2);
+                            else {
+                                server.sendCustom(webSockets.get(turn), MessageEnum.ADD_ACTION, "CONSUMABLE,EFFECT," + obj.getClass().getSimpleName() + "," + effect);
+                                waitAck(50, 1);
+                            }
                             game.getRound().getTurn().getOtherPlayer().removeConsumable((Consumable) obj2);
                             used = true;
                         } else {

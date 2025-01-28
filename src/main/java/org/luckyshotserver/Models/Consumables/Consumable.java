@@ -26,4 +26,8 @@ public abstract class Consumable implements ConsumableInterface{
     public String getEffect(String parameters) {
         return "No effect";
     }
+
+    public boolean visibilityEffect() {
+        return true;
+    }
 }

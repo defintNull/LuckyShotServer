@@ -8,7 +8,7 @@ public class Handcuffs extends Consumable{
 
     private static Handcuffs instance;
     private Handcuffs() {
-        super(Probability.LOW);
+        super(Probability.HIGH);
     }
 
     public static Handcuffs getInstance() {
@@ -29,5 +29,9 @@ public class Handcuffs extends Consumable{
 
     public String toString() {
         return "Handcuffs";
+    }
+
+    public boolean visibilityEffect() {
+        return false;
     }
 }

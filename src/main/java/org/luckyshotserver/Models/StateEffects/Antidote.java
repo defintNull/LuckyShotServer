@@ -12,7 +12,7 @@ public class Antidote extends StateEffect{
     }
 
     public String getEffect() {
-        return "All potion have loose all their effects";
+        return "Every potion loses its effects.";
     }
 
     public static Antidote getInstance() {
