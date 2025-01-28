@@ -27,6 +27,6 @@ public class Shield extends Powerup{
     }
 
     public String getEffect() {
-        return "The shield saved your life!";
+        return "The shield saved a life!";
     }
 }

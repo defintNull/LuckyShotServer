@@ -187,7 +187,7 @@ public class Server extends WebSocketServer {
             try {
                 Thread.sleep(50);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+
             }
             thread.start();
             System.out.println("Game started");

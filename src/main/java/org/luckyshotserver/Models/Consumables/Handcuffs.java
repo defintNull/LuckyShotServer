@@ -8,7 +8,7 @@ public class Handcuffs extends Consumable{
 
     private static Handcuffs instance;
     private Handcuffs() {
-        super(Probability.HIGH);
+        super(Probability.LOW);
     }
 
     public static Handcuffs getInstance() {

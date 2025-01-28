@@ -33,6 +33,7 @@ public class MultiplayerGameFacade {
     private ArrayList<String> inputBuffer = new ArrayList<>();
     private int turn = 0;
     private ArrayList<Boolean> ack = new ArrayList<>();
+    private ArrayList<Integer> wins = new ArrayList<>();
 
     public void setInputBuffer(ArrayList<String> inputBuffer) {
         this.inputBuffer = new ArrayList<>(inputBuffer);
@@ -46,17 +47,12 @@ public class MultiplayerGameFacade {
             users.add(server.getUserFromWebSocket(webSockets.get(i)));
             players.add(new HumanPlayer(users.get(i).getUsername(), users.get(i).getPowerups()));
         }
-        for(int i = 0; i < N_MAX_PLAYERS; i++) {
-            System.out.println(users.get(i).getUsername());
-            System.out.println(players.get(i).getUsername());
-            System.out.println(webSockets.get(i));
-        }
-
 
         this.game = new MultiplayerGame(players);
 
         for(int i = 0; i < N_MAX_PLAYERS; i++) {
             ack.add(false);
+            wins.add(0);
         }
     }
 
@@ -96,7 +92,7 @@ public class MultiplayerGameFacade {
             try {
                 Thread.sleep(1000);
             } catch (Exception e) {
-                e.printStackTrace();
+
             }
             //Inizio di un round
             StateEffect stateEffect = getRandomStateEffect();
@@ -158,7 +154,7 @@ public class MultiplayerGameFacade {
                 if(nDeaths == N_MAX_PLAYERS - 1) {
                     roundEnded = true;
                     roundNumber += 1;
-
+                    wins.set(iPlayerAlive, wins.get(iPlayerAlive) + 1);
                     game.getHumanPlayers().get(iPlayerAlive).addXp(30);
                 } else if(nDeaths == N_MAX_PLAYERS) { // Se c'è un pareggio (tipo una bomba) non si aggiunge xp
                     roundEnded = true;
@@ -194,27 +190,25 @@ public class MultiplayerGameFacade {
             userFacade.updateUser(users.get(i));
         }
 
-        Session session = HibernateService.getInstance().getCurrentSession();
         for(int i = 0; i < N_MAX_PLAYERS; i++) {
-            Transaction transaction;
-            try {
-                transaction = session.beginTransaction();
-                session.merge(users.get(i));
-                transaction.commit();
-            } catch (Exception e) {
-                server.sendError(webSockets.get(i), "FATAL");
-            }
-        }
-
-        for(int i = 0; i < N_MAX_PLAYERS; i++) {
-            server.sendCustom(webSockets.get(i), MessageEnum.REFRESH, "ALL");
+            server.sendCustom(webSockets.get(i), MessageEnum.SHOW_GAME_STATE, getGameMap());
         }
         waitAck(50, 2);
 
         for(int i = 0; i < N_MAX_PLAYERS; i++) {
-            if (iPlayerAlive == -1) {
+            server.sendCustom(webSockets.get(i), MessageEnum.SHOW, "ACTIONS");
+        }
+        waitAck(50, 2);
+
+        for(int i = 0; i < N_MAX_PLAYERS; i++) {
+            server.sendCustom(webSockets.get(i), MessageEnum.SHOW_GAME_STATE, getGameMap());
+        }
+        waitAck(50, 2);
+
+        for(int i = 0; i < N_MAX_PLAYERS; i++) {
+            if (wins.get(0).equals(wins.get(1))) {
                 server.sendCustom(webSockets.get(i), MessageEnum.ADD_ACTION, "WIN,-1");
-            } else if (i == iPlayerAlive) {
+            } else if (wins.get(i) > wins.get((i + 1) % N_MAX_PLAYERS)) {
                 server.sendCustom(webSockets.get(i), MessageEnum.ADD_ACTION, "WIN,1");
             } else {
                 server.sendCustom(webSockets.get(i), MessageEnum.ADD_ACTION, "WIN,0");
@@ -311,7 +305,6 @@ public class MultiplayerGameFacade {
             }
         }
 
-        ObjectConverter converter = new ObjectConverter();
         String map = converter.objToJSON(gameMap);
 
         System.out.println(map);
@@ -415,6 +408,14 @@ public class MultiplayerGameFacade {
                     server.sendCustom(webSockets.get(i), MessageEnum.ADD_ACTION, "HANDCUFFS," + ((HumanPlayer)game.getRound().getTurn().getOtherPlayer()).getUsername() + "," + 1 + "," + (i == turn));
                 }
                 waitAck(50, 2);
+                for(int i = 0; i < N_MAX_PLAYERS; i++) {
+                    server.sendCustom(webSockets.get(i), MessageEnum.REFRESH, "ALL");
+                }
+                waitAck(50, 2);
+                for(int i = 0; i < N_MAX_PLAYERS; i++) {
+                    server.sendCustom(webSockets.get(i), MessageEnum.SHOW, "ACTIONS");
+                }
+                waitAck(50, 2);
                 changeTurn = true;
             }
         }
@@ -454,10 +455,10 @@ public class MultiplayerGameFacade {
             }
         }
 
-        for(int i = 0; i < N_MAX_PLAYERS; i++) {
-            server.sendCustom(webSockets.get(i), MessageEnum.SHOW_GAME_STATE, getGameMap());
-        }
-        waitAck(50, 2);
+//        for(int i = 0; i < N_MAX_PLAYERS; i++) {
+//            server.sendCustom(webSockets.get(i), MessageEnum.SHOW_GAME_STATE, getGameMap());
+//        }
+//        waitAck(50, 2);
     }
 
     public void drawConsumables() {
@@ -469,7 +470,6 @@ public class MultiplayerGameFacade {
         int maxConsumablesNumber = 8;
         Random rand = new Random();
         int r = rand.nextInt(2, 6);
-        ObjectConverter converter = new ObjectConverter();
         for(int i = 0; i < N_MAX_PLAYERS; i++) {
             int numberOfConsumablesHumanPlayer = Math.min(r, maxConsumablesNumber - game.getHumanPlayers().get(i).getConsumablesNumber());
             ArrayList<Consumable> consumables = game.getHumanPlayers().get(i).getConsumables();
@@ -821,7 +821,7 @@ public class MultiplayerGameFacade {
                     ((HumanPlayer) game.getRound().getTurn().getCurrentPlayer()).setMultiplier(1);
                 } else {
                     for(int i=0; i<N_MAX_PLAYERS; i++) {
-                        server.sendCustom(webSockets.get(i), MessageEnum.ADD_ACTION, "POWERUP,EFFECT," + Shield.class.getSimpleName() + "," + ((HumanPlayer) game.getRound().getTurn().getCurrentPlayer()).getUsername());
+                        server.sendCustom(webSockets.get(i), MessageEnum.ADD_ACTION, "POWERUP,EFFECT," + ((HumanPlayer) game.getRound().getTurn().getCurrentPlayer()).getUsername() + "," + Shield.class.getSimpleName());
                     }
                     waitAck(50, 2);
                     currentPlayer.setShieldActive(false);

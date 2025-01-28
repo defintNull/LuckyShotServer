@@ -117,6 +117,7 @@ public class User {
     }
 
     public HashMap<Powerup, Integer> getPowerups() {
+        HashMap<Powerup, Integer> powerups = new HashMap<>(this.powerups);
         return powerups;
     }
 
