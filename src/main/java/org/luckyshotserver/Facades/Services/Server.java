@@ -31,9 +31,7 @@ public class Server extends WebSocketServer {
 
     private Server() {
         super(new InetSocketAddress(port));
-        launchEmptyRoomCollector();
         HibernateService.getInstance();
-
     }
 
     public static Server getInstance() {
@@ -50,6 +48,28 @@ public class Server extends WebSocketServer {
 
     @Override
     public void onClose(WebSocket webSocket, int i, String s, boolean b) {
+        for (Map.Entry<String, ArrayList<Object>> entry : games.entrySet()) {
+            MultiplayerGameFacade facade = null;
+            for (int j = 0; j < ((MultiplayerGameFacade)entry.getValue().getFirst()).getWebSockets().size(); j++) {
+                if(webSocket.equals(((MultiplayerGameFacade)entry.getValue().getFirst()).getWebSockets().get(j))) {
+                    facade = (MultiplayerGameFacade)entry.getValue().getFirst();
+                }
+            }
+            if(facade != null) {
+                for(WebSocket ws : facade.getWebSockets()) {
+                    if(!ws.equals(webSocket)) {
+                        sendCustom(ws, MessageEnum.END, "WIN_BY_DEFAULT");
+                        User user = loggedUser.get(webSocket);
+                        user.setGamesWon(user.getGamesWon() + 1);
+                        UserFacade userFacade = new UserFacade();
+                        userFacade.updateUser(user);
+                    }
+                }
+                ((Thread)entry.getValue().get(1)).interrupt();
+                games.remove(entry.getKey());
+                break;
+            }
+        }
         loggedUser.remove(webSocket);
         for (Map.Entry<String, Room> entry : gameRooms.entrySet()) {
             Room room = entry.getValue();
@@ -195,7 +215,18 @@ public class Server extends WebSocketServer {
         else if(command.equals("GAME_ACTION")) {
             ArrayList<String> json = new ArrayList<>(Arrays.asList(params.split(",")));
             String roomCode = json.removeFirst();
-            ((MultiplayerGameFacade)games.get(roomCode).getFirst()).setInputBuffer(json);
+            boolean found = false;
+            for(Map.Entry<String, ArrayList<Object>> entry : games.entrySet()) {
+                if(entry.getKey().equals(roomCode)) {
+                    found = true;
+                    break;
+                }
+            }
+            if(!found) {
+                sendCustom(webSocket, MessageEnum.END, "WIN_BY_DEFAULT");
+            } else {
+                ((MultiplayerGameFacade)games.get(roomCode).getFirst()).setInputBuffer(json);
+            }
         }
         else if(command.equals("GAME_END")) {
             if(games.get(params) != null) {
@@ -281,19 +312,5 @@ public class Server extends WebSocketServer {
             sb.append(CHARACTERS.charAt(index));
         }
         return sb.toString();
-    }
-
-    public void launchEmptyRoomCollector() {
-//        Thread emptyRoomCollector = new Thread(() -> {
-//            while(true) {
-//                try {
-//                    Thread.sleep(2000);
-//                    System.out.println(gameRooms);
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-//        emptyRoomCollector.start();
     }
 }

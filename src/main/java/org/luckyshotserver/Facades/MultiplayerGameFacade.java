@@ -1,5 +1,6 @@
 package org.luckyshotserver.Facades;
 
+import org.checkerframework.checker.units.qual.A;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.java_websocket.WebSocket;
@@ -34,6 +35,10 @@ public class MultiplayerGameFacade {
     private int turn = 0;
     private ArrayList<Boolean> ack = new ArrayList<>();
     private ArrayList<Integer> wins = new ArrayList<>();
+
+    public ArrayList<WebSocket> getWebSockets() {
+        return new ArrayList<>(webSockets);
+    }
 
     public void setInputBuffer(ArrayList<String> inputBuffer) {
         this.inputBuffer = new ArrayList<>(inputBuffer);
@@ -72,7 +77,7 @@ public class MultiplayerGameFacade {
             try {
                 Thread.sleep(t);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+
             }
         }
 
