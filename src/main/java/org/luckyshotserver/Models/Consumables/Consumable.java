@@ -2,7 +2,6 @@ package org.luckyshotserver.Models.Consumables;
 
 import org.luckyshotserver.Models.Enums.Probability;
 import org.luckyshotserver.Models.MultiplayerGame;
-import org.luckyshotserver.Models.SinglePlayerGame;
 
 public abstract class Consumable implements ConsumableInterface{
     private final int probability;

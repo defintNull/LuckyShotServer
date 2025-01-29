@@ -3,7 +3,6 @@ package org.luckyshotserver.Models.Consumables;
 import org.luckyshotserver.Models.Enums.Probability;
 import org.luckyshotserver.Models.Gun;
 import org.luckyshotserver.Models.MultiplayerGame;
-import org.luckyshotserver.Models.SinglePlayerGame;
 
 public class Inverter extends Consumable{
     private static Inverter instance;

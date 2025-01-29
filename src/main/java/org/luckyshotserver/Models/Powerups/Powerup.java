@@ -1,7 +1,6 @@
 package org.luckyshotserver.Models.Powerups;
 
 import org.luckyshotserver.Models.MultiplayerGame;
-import org.luckyshotserver.Models.SinglePlayerGame;
 
 import java.io.Serializable;
 
