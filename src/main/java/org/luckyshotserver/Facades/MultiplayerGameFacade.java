@@ -25,7 +25,7 @@ import java.util.Random;
 public class MultiplayerGameFacade {
     private final int N_MAX_PLAYERS;
     private ArrayList<User> users = new ArrayList<>();
-    private final int MAX_ROUNDS = 1;
+    private final int MAX_ROUNDS = 3;
     private ArrayList<WebSocket> webSockets;
     private MultiplayerGame game;
     private Server server = Server.getInstance();
