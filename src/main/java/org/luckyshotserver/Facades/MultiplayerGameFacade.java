@@ -169,6 +169,16 @@ public class MultiplayerGameFacade {
                 turn = (turn + 1) % N_MAX_PLAYERS;
             }
 
+            for(int i = 0; i < N_MAX_PLAYERS; i++) {
+                server.sendCustom(webSockets.get(i), MessageEnum.SHOW_GAME_STATE, getGameMap());
+            }
+            waitAck(50, 2);
+
+            for(int i = 0; i < N_MAX_PLAYERS; i++) {
+                server.sendCustom(webSockets.get(i), MessageEnum.SHOW, "ACTIONS");
+            }
+            waitAck(50, 2);
+
             // Condizione di fine gioco
             if(game.getRound().getRoundNumber() >= MAX_ROUNDS) { // ho tolto la condizione sulle vite (vedere SinglePlayerGameFacade)
                 gameEnded = true;
@@ -444,15 +454,15 @@ public class MultiplayerGameFacade {
             }
             ArrayList<Integer> r = new ArrayList<>();
             for (int i = 0; i < N_MAX_PLAYERS; i++) {
-                if(game.getHumanPlayers().get(i).getLives() == 0) {
+                if(game.getHumanPlayers().get(i).getLives() <= 0) {
                     r.add(i);
                 }
             }
             if(active && !r.isEmpty()) {
                 Random rand = new Random();
                 int index = rand.nextInt(r.size());
-                game.getHumanPlayers().get(index).setLives(1);
-                game.getHumanPlayers().get(index).setResurrected(true);
+                game.getHumanPlayers().get(r.get(index)).setLives(1);
+                game.getHumanPlayers().get(r.get(index)).setResurrected(true);
                 for(int i = 0; i < N_MAX_PLAYERS; i++) {
                     server.sendCustom(webSockets.get(i), MessageEnum.ADD_ACTION, "RESURRECTED," + ((HumanPlayer)game.getRound().getTurn().getOtherPlayer()).getUsername());
                 }

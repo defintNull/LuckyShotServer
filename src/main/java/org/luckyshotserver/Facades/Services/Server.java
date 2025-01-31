@@ -30,7 +30,7 @@ public class Server extends WebSocketServer {
     private ConcurrentHashMap<String, ArrayList<Object>> games = new ConcurrentHashMap<>();
 
     private Server() {
-        super(new InetSocketAddress(port));
+        super(new InetSocketAddress("192.168.175.167",port));
         HibernateService.getInstance();
     }
 
