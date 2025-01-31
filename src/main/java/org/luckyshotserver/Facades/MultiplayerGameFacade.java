@@ -464,7 +464,7 @@ public class MultiplayerGameFacade {
                 game.getHumanPlayers().get(r.get(index)).setLives(1);
                 game.getHumanPlayers().get(r.get(index)).setResurrected(true);
                 for(int i = 0; i < N_MAX_PLAYERS; i++) {
-                    server.sendCustom(webSockets.get(i), MessageEnum.ADD_ACTION, "RESURRECTED," + ((HumanPlayer)game.getRound().getTurn().getOtherPlayer()).getUsername());
+                    server.sendCustom(webSockets.get(i), MessageEnum.ADD_ACTION, "RESURRECTED," + (game.getHumanPlayers().get(r.get(index))).getUsername());
                 }
                 waitAck(50, 2);
             }
